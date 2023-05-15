@@ -1,0 +1,25 @@
+if [ $1 ] ; then
+#echo "This is a ssh wrapper program, Not the ssh binary"
+
+HOSTNAME=`grep -i $1 ssh_servers`
+#HOSTNAME=`ls /opsw/Server/@ |grep -i $1`
+
+if [ $HOSTNAME ] ; then
+echo $HOSTNAME
+ttlg -l root -n $HOSTNAME $2 $3 $4 $5 $6
+else
+echo "Updating server file ......."
+ls /opsw/Server/@ > ssh_servers
+echo "Trying again......"
+HOSTNAME=`grep -i $1 ssh_servers`
+if [ $HOSTNAME ] ; then
+ttlg -l root -n $HOSTNAME $2 $3 $4 $5 $6
+else
+echo "$1 is not found on OpsWare"
+fi
+fi
+
+else
+echo 'This is a ssh wrapper program. Please provide a valid hostname'
+fi
+

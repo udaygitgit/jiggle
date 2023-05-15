@@ -1,0 +1,100 @@
+AIX:
+----
+clRGinfo --> Cluster or not
+
+Pre-Check and Post-Check for Centrify Installation:
+---------------------------------------------------
+for i in `cat aix`; do ./2 $i "uptime"; done
+for i in `cat aix`; do ./2 $i "lssrc -a | grep vasd"; done
+for i in `cat aix`; do ./2 $i "lslpp -l | grep -i centrify"; done
+for i in `cat aix`; do ./2 $i "adinfo"; done
+for i in `cat aix`; do ./2 $i "adinfo -y cloud"; done
+for i in `cat aix`; do ./2 $i "df -g"; done
+
+Stopping vasd service manually:
+-------------------------------
+stopsrc -s vasd
+
+startsrc -s sshd
+
+MFA Looping after Centrify Installation:
+----------------------------------------
+
+/etc/security/user was zero bytes
+So, I copied user.qas to user and changed this line:
+SYSTEM = "VAS OR compat"
+To this line:
+SYSTEM = "CENTRIFYDC OR CENTRIFYDC[NOTFOUND] AND (compat)"
+
+Ask for LAN ID:
+---------------
+lsuser -f <user>
+chsec -f /etc/security/lastlog -a "unsuccessful_login_count=0" -s <user>
+
+lsuser -f f6olhp3cat 
+chsec -f /etc/security/lastlog -a "unsuccessful_login_count=0" -s f6olhp3
+f4c1u4v
+
+
+AIX Getting connection error:
+-----------------------------
+check below commands
+and start sshd
+root@a1pvap049:/# lssrc -s sshd
+Subsystem Group PID Status
+ sshd ssh inoperative
+root@a1pvap049:/# startsrc -s sshd
+0513-059 The sshd Subsystem has been started. Subsystem PID is 18219038.
+
+
+
+Missing Login file:
+-------------------
+cd /etc/security
+cp -p login.cfg.qas login.cfg
+
+
+adjoin -S 1dc.com
+
+AIX, If connected with a WRONG ZONE:
+------------------------------------
+adleave -t
+adjoin -S 1dc.com
+ 
+a1pvdb1145
+Not joined to any domain
+Licensed Features: Enabled
+
+
+SOLARIS:
+TROUBLESHOOTING:
+
+ cd /usr/share/centrifydc/bin
+ ./adcdiag
+ cd /var/adm
+ ls -latr
+ tail -f messages
+ cd /var/centrify/net/certs
+ ls
+ cp IwaTrustRootaat0113.cer /tmp/
+ adleave -t
+ mv /tmp/IwaTrustRootaat0113.cer .
+ ps -ef | grep adcli
+ adjoin -S 1dc.com
+ adflush -c
+ adinfo -y cloud
+ adinfo
+
+To COPY Certificate for Centrify:
+---------------------------------
+scp IwaTrustRootaat0113.cer  f6olhp3@r1qvap1303.1dc.com:/var/centrify/net/certs
+
+wget IwaTrustRootaat0113.cer http://n1pvir001.1dc.com/repo/IwaTrustRootaat0113.cer
+
+
+Ramos, Herbert 12:15 PM
+this is the only server I find to be working correctly .. s3cvap998
+
+ 
+ 
+ 

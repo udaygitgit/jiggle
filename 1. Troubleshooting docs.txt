@@ -1,0 +1,218 @@
+LINUX TROUBLESHOOTING:
+
+ssh -i ~/.ssh/rsa username@IP
+
+find . -xdev -size +1000000c -exec ls -l {} \; | sort -rnk5 | head -10
+du -sch /* | grep "G" -> gives in Gigabyte
+
+fdisk -l
+lsblk  -> to check the disk
+
+============================================
+LVM:
+----
+for host in ls /sys/class/fc_host/;do echo "- - -" >/sys/class/fc_host/$host/issue_lip; done
+echo "- - -" > /sys/class/scsi_host/host0/scan  -> Channel on the HBA, SCSI target ID and LUN ID
+lvextend -L +1G -n /file/system/name 
+resize2fs /dev/mapper/vg_server-lv_root
+
+
+============================================
+> java -jar fwauth.jar -h
+
+Check for Certificate issue:
+ls /var/centrify/net/certs
+
+adflush -f && adreload
+
+TO TAKE SSH:
+------------
+rosh -l root -n 
+
+for i in `cat CR1164322`; do rosh -n root -l $i "cat /etc/hosts"; done
+
+============================================
+Pre and Post validation for LINUX deployment:
+---------------------------------------------
+for i in `cat linux`; do ./2 $i "uptime"; done
+for i in `cat linux`; do ./2 $i "adinfo"; done
+for i in `cat linux`; do ./2 $i "rpm -qa | grep -i centrify"; done
+for i in `cat linux`; do ./2 $i "ls -l /opt/quest/sbin/vasd"; done
+for i in `cat linux`; do ./2 $i "ps -ef | grep -i vasd"; done
+for i in `cat linux`; do ./2 $i "chkconfig --list vasd"; done
+for i in `cat linux`; do ./2 $i "ps -ef | grep -I cdawatch"; done
+
+for i in `cat linux`; do ./2 $i "chmod 600 /opt/quest/sbin/vasd"; done
+for i in `cat linux`; do ./2 $i "chmod 600 /opt/quest/sbin/.vasd"; done
+============================================
+
+To check QAS file permissions:
+if file "vasd" has 755 or other permissions, then change to 600
+
+ls -ld /opt/quest/sbin/vasd
+ls -ld /opt/quest/sbin/.vasd
+chmod 600 /opt/quest/sbin/vasd
+ls -ld /opt/quest/sbin/vasd
+
+
+=======================
+[cduser@r3pvdo1019 bin]$ ps -ef|grep cdpmgr
+root 17722 1 1 20:30 ? 00:00:00 /opt/cduser/cdunix/ndm/bin/cdpmgr -i /opt/cduser/cdunix/ndm/cfg/sus.n3pvdb018/initparm.cfg
+cduser 17799 17586 0 20:31 pts/2 00:00:00 grep --color=auto cdpmgr
+[cduser@r3pvdo1019 bin]$
+=======================
+
+VAS enabled or not -- verified?
+
+ps -ef |grep -i vas
+/etc/init.d/vasd status
+
+--------
+#SCRIPT TO CHECK VAS STATUS
+
+for i in `cat filename`; do rosh -n root -l $i "COMMAND"; done
+
+do
+./ssh_warpper $i "/etc/init.d/vasd status"
+done
+--------
+1488
+
+============================================
+[f6olhp3@n1pvap155 ~](614) $ for i in `cat linux`; do ./2 $i "ps -ef | grep -I cdawatch"; done
+r1pvtl1015.1dc.com
+root     21879  2733  0 18:51 ?        00:00:00 ptymonitor --oob-fd 19 --stderr-mode MUX --ttlg --gid 0 --username root --wait-time 60 ps -ef | grep -I cdawatch
+root     21882 21879  0 18:51 ?        00:00:00 bash -c ps -ef | grep -I cdawatch
+root     21884 21882  0 18:51 ?        00:00:00 grep -I cdawatch
+
+[f6olhp3@n1pvap155 ~](615) $ for i in `cat linux`; do ./2 $i "ps -ef | grep -I cdawatch"; done
+r1pvtl1015.1dc.com
+root      3588  2733  1 18:58 ?        00:00:00 ptymonitor --oob-fd 19 --stderr-mode MUX --ttlg --gid 0 --username root --wait-time 60 ps -ef | grep -I cdawatch
+root      3591  3588  0 18:58 ?        00:00:00 bash -c ps -ef | grep -I cdawatch
+root      3593  3591  0 18:58 ?        00:00:00 grep -I cdawatch
+root     31204 31187  0 18:55 ?        00:00:00 cdawatch 31187
+============================================
+
+SOLARIS:
+--------
+for i in `cat solaris`; do ./2 $i "uptime"; done
+for i in `cat solaris`; do ./2 $i "adinfo"; done
+for i in `cat solaris`; do ./2 $i "cat /etc/hosts"; done
+for i in `cat solaris`; do ./2 $i "svcs vasd"; done
+for i in `cat solaris`; do ./2 $i "svcs -a | grep -i centrify"; done
+for i in `cat solaris`; do ./2 $i "ls -lt /usr/local/etc/sudoers* | more"; done
+for i in `cat solaris`; do ./2 $i "ls -l /etc/centrifydc/user.ignore"; done
+for i in `cat solaris`; do ./2 $i "more /var/tmp/CentrifyInstall.log"; done
+
+============================================
+
+============================================
+
+SOLARIS:
+--------
+Disable auto_fs
+for i in `cat solaris`; do ./2 $i "svcadm disable /system/filesystem/autofs:default"; done
+# svcadm disable /system/filesystem/autofs:default
+
+Check auto_fs
+for i in `cat solaris`; do ./2 $i "svcs -a | grep autofs"; done
+# svcs -a | grep autofs
+disabled       12:48:02 svc:/system/filesystem/autofs:default
+
+Link /home to /export/home and check it.
+# mv /home /home.orig
+# ln -s /export/home /home
+# ls -l /home
+# df -h /home
+for i in `cat solaris`; do ./2 $i "mv /home /home.orig"; done
+for i in `cat solaris`; do ./2 $i "ln -s /export/home /home"; done
+for i in `cat solaris`; do ./2 $i "ls -l /home"; done
+for i in `cat solaris`; do ./2 $i "df -h /home"; done
+============================================
+============================================
+
+
+port 4343
+
+TIER 1 Server:
+=============
+Custom Attribute (Local)
+Name						Source						Value
+FDC_INV_Network_Tier		Locally Specified Value		W1-R
+=============
+
+
+=============
+ROLL BACK FOR LINUX:
+
+1. UNINSTALL THE CENTRIFY
+
+2. RUN VAS command:
+
+/opt/quest/bin/vastool -u unixserveradd -w T1x9Zppc6 join -f 1dc.com
+
+password = T1x9Zppc6
+
+/opt/quest/bin/vastool -u unixserveradd join -f 1dc.com
+
+=============
+
+
+SOLARIS:
+TROUBLESHOOTING:
+
+a1pvdb1145
+Not joined to any domain
+Licensed Features: Enabled
+
+SOLARIS: To Join in DOMAIN:
+---------------------------
+for i in `cat solaris`; do ./2 $i "adjoin -S 1dc.com"; done
+
+ cd /usr/share/centrifydc/bin
+ ./adcdiag
+ cd /var/adm
+ ls -latr
+ tail -f messages
+ cd /var/centrify/net/certs
+ ls
+ cp IwaTrustRootaat0113.cer /tmp/
+ adleave -t
+ mv /tmp/IwaTrustRootaat0113.cer .
+ ps -ef | grep adcli
+ adjoin -S 1dc.com
+ adflush -c
+ adinfo -y cloud
+ adinfo
+
+
+ 
+============================================
+For APP Server: Perform below steps:
+
+#!/bin/sh
+cp /etc/centrifydc/user.ignore /etc/centrifydc/user.ignore.`date +'%Y-%m-%d'`
+echo "websrvr" >> /etc/centrifydc/user.ignore
+/etc/init.d/centrifydc restart 
+adflush -f 
+============================================
+
+
+
+For SUSE: To Reset the Pam_tally:
+---------------------------------
+for i in `pam_tally --user |awk '{print $2}'`;do pam_tally --user $i --reset; faillog -u $i -r; done
+for i in `pam_tally2 --user |awk '{print $2}'`;do pam_tally2 --user $i --reset; faillog -u $i -r; done
+
+
+For LINUX: To Reset the Pam_tally:
+----------------------------------
+for i in `pam_tally --user |awk '{print $1}'`;do pam_tally --user $i --reset; faillog -u $i -r; done
+for i in `pam_tally2 --user |awk '{print $1}'`;do pam_tally2 --user $i --reset; done
+for i in `pam_tally2 --user |awk '{print $1}'`;do pam_tally2 --user $i --reset; faillog -u $i -r; done
+
+To COPY Certificate for Centrify:
+---------------------------------
+scp IwaTrustRootaat0113.cer  f6olhp3@r1qvap1303.1dc.com:/var/centrify/net/certs
+
+wget IwaTrustRootaat0113.cer http://n1pvir001.1dc.com/repo/IwaTrustRootaat0113.cer
